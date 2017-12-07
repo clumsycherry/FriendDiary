@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+    {% if get_flashed_messages() %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {{ get_flashed_messages() | join(" ") }}
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+    <p>Diary of <span class="purple"><b>{{name}}</b></span></p>
+{% endblock %}

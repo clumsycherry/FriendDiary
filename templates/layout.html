@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta -->
+        <meta charset="utf-8"/>
+        <meta content="initial-scale=1, width=device-width" name="viewport"/>
+
+        <!-- documentation at http://getbootstrap.com/, alternative themes at https://www.bootstrapcdn.com/bootswatch/ -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/spacelab/bootstrap.min.css" rel="stylesheet"/>
+
+        <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet"/>
+
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+        <title>Friend Diary | {% block title %}{% endblock %}</title>
+    </head>
+
+    <body>
+        <div class="container">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="{{ url_for('index') }}">
+                            <span class="dark">Friend</span><span class="purple">Diary</span>
+                        </a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="navbar">
+                        {% if session.user_id %}
+                            <ul class="nav navbar-nav">
+                                <li><a href="{{ url_for('index') }}">Friends</a></li>
+                                <li><a href="{{ url_for('history') }}">Interests</a></li>
+                                <li><form class="navbar-form" role="search" action="{{ url_for('search') }}" method="post">
+                                    <input class="form-control" type="text submit" name="item" id="navBarSearchInput" placeholder="&#x1F50E Search Friend or Interest">
+                                </form></li>
+                                <li><a href="{{ url_for('sell') }}">Add Friend</a></li>
+                                <li class="navbar-right"><a href="{{ url_for('logout') }}">Log Out</a></li>
+                            </ul>
+
+                        {% else %}
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a href="{{ url_for('register') }}">Register</a></li>
+                                <li><a href="{{ url_for('login') }}">Log In</a></li>
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+
+            <main>
+                <font color="white">
+                {% block main %}{% endblock %}
+                </font>
+            </main>
+
+        </div>
+
+    </body>
+
+</html>
