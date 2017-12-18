@@ -14,8 +14,11 @@
         <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet"/>
 
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <!--
+        <script src="{{ url_for('static', filename='scripts.js') }}"></script> -->
 
         <title>Friend Diary | {% block title %}{% endblock %}</title>
+
     </head>
 
     <body>
@@ -31,11 +34,11 @@
                         {% if session.user_id %}
                             <ul class="nav navbar-nav">
                                 <li><a href="{{ url_for('index') }}">Friends</a></li>
-                                <li><a href="{{ url_for('history') }}">Interests</a></li>
+                                <li><a href="{{ url_for('index') }}">Interests</a></li>
                                 <li><form class="navbar-form" role="search" action="{{ url_for('search') }}" method="post">
                                     <input class="form-control" type="text submit" name="item" id="navBarSearchInput" placeholder="&#x1F50E Search Friend or Interest">
                                 </form></li>
-                                <li><a href="{{ url_for('sell') }}">Add Friend</a></li>
+                                <li><a href="{{ url_for('addfriend') }}">Add Friend</a></li>
                                 <li class="navbar-right"><a href="{{ url_for('logout') }}">Log Out</a></li>
                             </ul>
 
