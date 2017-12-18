@@ -5,5 +5,28 @@
 {% endblock %}
 
 {% block main %}
-    {{item}}
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <div class="header">{{item}}</div><br>
+
+    <!-- Friend Info: Name, Interest -->
+    <form action="{{ url_for('addfriend') }}" name="addfriend" method="post">
+        <fieldset>
+            <table align="center">
+                <tr>
+                    <td align="right">Interest</td>
+                    <td align="left"><div class="form-group">
+                    {% for interest in interests %}
+                        <textarea class="form-control" name="interest" id="interest2">{{interest}}</textarea>
+                    {% endfor %}
+                    </div></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><div class="form-group gray"><button class="btn btn-default" type="submit" onclick="formSubmitter('addfriend', 'message')">Update</button>
+                    <br><span class="error">{{message}}</span>
+                    <p id='message' class='error'></p></div></td>
+                </tr>
+
+            </table>
+        </fieldset>
+    </form>
 {% endblock %}

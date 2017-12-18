@@ -21,11 +21,20 @@
     width:400px;
 }
 
+main .header
+{
+    font-family: "monotype corsiva";
+    font-size: 36pt;
+    color: white;
+}
+
 main p
 {
     font-family: "monotype corsiva";
     font-size: 24pt;
+    color: #bfa1b8;
 }
+
 
 main .form-control
 {
@@ -42,19 +51,44 @@ main img
     max-width: 40%;
 }
 
-main td
+main td{
+    font-size: 18pt;
+    padding-right:10px;
+    color: gray;
+    font-family: "monotype corsiva";
+    vertical-align: top;
+    margin: auto;
+}
+
+main div
 {
-    /* left-align tables' cells */
-    text-align: left;
+    text-align: center;
+}
+
+.error {
+    font-size: 15pt;
+    color: #E75480;
+    font-family: "monotype corsiva";
 }
 
 body{
   background: radial-gradient(circle, #ffd1db, #fbb9d3);
 }
 
-.alert {
-    background: #ffffd5;
+/*Add friend form*/
+td #name{
+    width:300px;
+    resize: none;
+}
+
+td #interest{
+    width:300px;
+}
+
+td #interest2{
+    width:300px;
+    background: #fcdeea;
     border: none;
-    color: #bfa1b8;
-    text-align: center;
+    height: auto;
+    resize: none;
 }

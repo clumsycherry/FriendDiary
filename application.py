@@ -1,10 +1,8 @@
-from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session, url_for
-from flask_session import Session
+from flask import Flask, flash, redirect, render_template, request, url_for, session
+from flask_sqlalchemy import SQLAlchemy
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
-
-from helpers import *
+from flask_session import Session
 
 # configure application
 app = Flask(__name__)
@@ -18,40 +16,22 @@ if app.config["DEBUG"]:
         response.headers["Pragma"] = "no-cache"
         return response
 
-# custom filter
-app.jinja_env.filters["usd"] = usd
-
 # configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# configure CS50 Library to use SQLite database
-db = SQL("sqlite:///people.db")
+#SQL Alchemy
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///people.db"
+app.config["SQLALCHEMY_ECHO"] = True
 
-@app.route("/")
-@login_required
-def index():
-    #get user's name
-    id = session["user_id"]
-    name = db.execute("SELECT name FROM users WHERE id = :id", id=id)[0]["name"]
-    return render_template("index.html", name=name)
+# configure to use SQLAlchemy database
+db = SQLAlchemy(app)
 
-@app.route("/history")
-@login_required
-def history():
-    """Show history of transactions."""
-    id = session["user_id"]
-
-    #make a hashtable for stocks to display
-    stocks = []
-    records = db.execute("SELECT * FROM records WHERE id = :id", id=id)
-    for record in records:
-        symbol = record["stock"]
-        stocks.append({"symbol": symbol, "name": lookup(symbol)["name"], "share": record["share"], "price": usd(record["price"]), "timestamp": record["timestamp"]})
-
-    return render_template("history.html", stocks=stocks)
+from tables import *
+from helpers import *
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -64,22 +44,24 @@ def login():
     if request.method == "POST":
 
         # ensure username was submitted
-        if not request.form.get("username"):
+        username = request.form.get("username")
+        if not username:
             return apology("must provide username")
 
         # ensure password was submitted
-        elif not request.form.get("password"):
+        password = request.form.get("password")
+        if not password:
             return apology("must provide password")
 
-        # query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
-
         # ensure username exists and password is correct
-        if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
-            return apology("invalid username and/or password")
+        user = User.query.filter(User.username==username).first()
+        if not user:
+            return apology("Invalid username and password combination")
+        if not pwd_context.verify(password, user.password):
+            return apology("Invalid username and password combination")
 
         # remember which user has logged in
-        session["user_id"] = rows[0]["id"]
+        session["user_id"] = user.id
 
         # redirect user to home page
         return redirect(url_for("index"))
@@ -120,162 +102,88 @@ def register():
         if password != password2:
             return apology("Passwords must match")
 
-        #encrypt password and add unique users to database
-        hash = pwd_context.hash(password)
-        unique = db.execute("INSERT INTO users (username, hash, name) VALUES (:username, :hash, :name)", username = username, hash = hash, name=name)
-        if not unique:
-            return apology(username + " is taken", "please select new username")
+        #check if username taken
+        if User.query.filter(User.username == username).count() > 0:
+           return apology(username + " is taken", "Please select new username")
 
-    return render_template("login.html", message="Registration successful! Please log in:")
+        #add user
+        user = User(name, username, pwd_context.hash(password))
+        db.session.add(user)
+        db.session.commit()
 
-@app.route("/buy", methods=["GET", "POST"])
+        return render_template("login.html", message="Registration successful! Please log in:")
+    else:
+        return render_template("login.html")
+
+@app.route("/unregister")
 @login_required
-def buy():
-    """Buy shares of stock."""
-    if request.method == "GET":
-        return render_template("buy.html")
-    elif request.method == "POST":
+def unregister():
+    """Unregister user."""
+    User.query.filter(User.id == session["user_id"]).delete()
+    db.session.commit()
+    return render_template("login.html", message="Successfully unregistered!")
 
-        #stock symbol cannot be blank
-        symbol = request.form["symbol"]
-        if symbol == "":
-            return apology("Missing", "Stock Symbol")
-
-        #check if number of shares is valid
-        share = request.form["share"]
-        if share == "":
-            return apology("Missing", "Number of Shares")
-
-        share = int(share)
-        if share < 1:
-            return apology("Number of shares must be more than 0")
-
-        #calculate cost
-        stock = lookup(symbol)
-        if stock == None:
-            return apology("Invalid Symbol", symbol)
-        symbol = stock["symbol"]
-        price = stock["price"]
-        cost = price * share
-
-        #see if user has enough money to purchase
-        id = session["user_id"]
-        cash = db.execute("SELECT cash FROM users WHERE id = :id", id=id)[0]["cash"]
-        if cash < cost:
-            return apology("Cost exceeds your current balance", "Cannot purchase stocks")
-
-        #update user cash
-        db.execute("UPDATE users SET cash = :cash WHERE id = :id", cash=cash-cost, id=id)
-
-        #update purchase records
-        db.execute("INSERT INTO records (id, stock, share, price) VALUES (:id, :stock, :share, :price)", id=id, stock=symbol, share=share, price=price)
-
-        flash("Success! You just bought {} share(s) of {} at {} per share.".format(share, stock["name"], usd(price)), 'info')
-        return redirect(url_for("index"))
-
-    #homepage will show purchase results
-    return redirect(url_for("index"))
-
-@app.route("/sell", methods=["GET", "POST"])
+@app.route("/")
 @login_required
-def sell():
-    """Sell shares of stock."""
-    if request.method == "GET":
-        return render_template("sell.html")
-    elif request.method == "POST":
-        #stock symbol cannot be blank
-        symbol = request.form["symbol"]
-        if symbol == "":
-            return apology("Missing", "Stock Symbol")
+def index():
+    """Index"""
+    #get user's name
+    user = User.query.filter(User.id==session["user_id"]).first()
+    return render_template("index.html", name=user.name)
 
-        #check if number of shares is valid
-        share = request.form["share"]
-        if share == "":
-            return apology("Missing", "Number of Shares")
-        share = int(share)
-        if share < 1:
-            return apology("Number of shares must be more than 0")
-
-        #see if user has enough shares to sell
-        stock = lookup(symbol)
-        if stock == None:
-            return apology("Invalid Symbol", symbol)
-
-        #check if enough shares to sell
-        id = session["user_id"]
-        symbol = stock["symbol"]
-        usershares = db.execute("SELECT SUM(share) FROM records WHERE id =:id AND stock= :stock", id=id, stock=symbol)
-        if not usershares or share > usershares[0]["SUM(share)"]:
-            return apology("You do not own enough shares to sell", "Transaction Failed")
-
-        #update sale record
-        price = stock["price"]
-        db.execute("INSERT INTO records (id, stock, share, price) VALUES (:id, :stock, :share, :price)", id=id, stock=symbol, share=share*-1, price=price)
-
-        #update user cash
-        cash = db.execute("SELECT cash FROM users WHERE id = :id", id=id)[0]["cash"] + (price * share)
-        db.execute("UPDATE users SET cash = :cash WHERE id = :id", cash=cash, id=id)
-
-        flash("Success! You just sold {} share(s) of {} at {} per share.".format(share, stock["name"], usd(price)), 'info')
-        return redirect(url_for("index"))
-
-    #homepage will show purchase results
-    return redirect(url_for("index"))
-
-@app.route("/minusone")
-@login_required
-def minusone():
-    """Sell 1 share of a certain stock from the index page."""
-    #obtain stock symbol from index button
-    symbol = request.args.get('symbol', None)
-    stock = lookup(symbol)
-
-    #see if user has enough shares to sell
-    id = session["user_id"]
-    usershares = db.execute("SELECT SUM(share) FROM records WHERE id =:id AND stock= :stock", id=id, stock=symbol)
-    if usershares[0]["SUM(share)"] < 1:
-        return apology("You do not own enough shares to sell", "Transaction Failed")
-
-    #update sale record
-    price = stock["price"]
-    db.execute("INSERT INTO records (id, stock, share, price) VALUES (:id, :stock, :share, :price)", id=id, stock=symbol, share= -1, price=price)
-
-    #update user cash
-    cash = price + db.execute("SELECT cash FROM users WHERE id = :id", id=id)[0]["cash"]
-    db.execute("UPDATE users SET cash = :cash WHERE id = :id", cash=cash, id=id)
-
-    flash("Success! You just sold a share of {} for {}.".format(stock["name"], usd(price)), 'info')
-    return redirect(url_for("index"))
-
-@app.route("/plusone")
-@login_required
-def plusone():
-    """Buy 1 share of a certain stock from the index page."""
-    #obtain stock symbol from index button
-    symbol = request.args.get('symbol', None)
-    stock = lookup(symbol)
-
-    #see if user has enough cash to buy stock
-    id = session["user_id"]
-    price = stock["price"]
-    cash = db.execute("SELECT cash FROM users WHERE id = :id", id=id)[0]["cash"]
-    if cash < price:
-        return apology("Cost exceeds your current balance", "Cannot purchase this stock")
-
-    #update sale record
-    db.execute("INSERT INTO records (id, stock, share, price) VALUES (:id, :stock, :share, :price)", id=id, stock=symbol, share= 1, price=price)
-
-    #update user cash
-    db.execute("UPDATE users SET cash = :cash WHERE id = :id", cash= cash-price, id=id)
-
-    flash("Success! You just bought a share of {} for {}.".format(stock["name"], usd(price)), 'info')
-    return redirect(url_for("index"))
-
-@app.route("/search", methods=["POST"])
+@app.route("/search", methods=["GET","POST"])
 @login_required
 def search():
     """Search for Friend or Interest"""
-    item = request.form["item"]
-    if item == "":
-        return apology("Invalid Search")
-    return render_template("search.html", item=item)
+    if request.method == "GET":
+        return render_template("search.html", item="Enter search item above")
+
+    if request.method == "POST":
+        item = request.form["item"]
+        if item == "":
+            return apology("Invalid Search")
+
+        #Search by name(not case sensitive)
+        friends = Friend.query.filter(Friend.name.contains(item), Friend.user_id == session["user_id"]).all()
+        if not friends:
+            return apology("No results!")
+        result = ""
+        for friend in friends:
+            result += friend.name + " "
+
+        #gather interests
+        friend1 = friends[0]
+        notes = Note.query.filter(Note.friend_id==friend1.id).all()
+        interests = []
+        for note in notes:
+            if note.type == "Interest":
+                interests.append(note.content)
+
+        return render_template("search.html", item=result, interests=interests)
+
+@app.route("/addfriend", methods=["GET", "POST"])
+@login_required
+def addfriend():
+    """Adds a new friend to database"""
+    if request.method == "GET":
+        return render_template("addfriend.html")
+
+    if request.method == "POST":
+        #check for name input
+        name = request.form["name"]
+        if name == "":
+            return render_template("addfriend.html", message = "Must fill in a friend's name")
+
+        #add friend
+        friend = Friend(session["user_id"], name)
+        db.session.add(friend)
+        db.session.commit()
+
+        #add interest if listed
+        interest = request.form["interest"]
+        if interest != "":
+            session["friend_id"] = friend.id
+            addInterest(interest)
+            session.pop("friend_id", None)
+
+        return render_template("addfriend.html", message = "Friend added!")

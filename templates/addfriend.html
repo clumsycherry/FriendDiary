@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Friend
+{% endblock %}
+
+{% block main %}
+    <!-- document.forms[formTag].submit(); -->
+    <script language="JavaScript">
+    function formSubmitter(formTag, messageTag){
+      document.getElementById(messageTag).innerHTML = "Entering new friend's information...";
+    }
+    </script>
+
+    <div class="header">Add Friend...</div><br>
+
+    <!-- Friend Info: Name, Interest -->
+    <form action="{{ url_for('addfriend') }}" name="addfriend" method="post">
+        <fieldset>
+            <table align="center">
+                <div><tr>
+                    <td align="right">Friend's Name</td>
+                    <td align="left"><div class="form-group"><input class="form-control" id="name" name="name" placeholder="e.g. Tom Cruise" type="text"/></div></td>
+                </tr>
+                <tr>
+                    <td align="right">Interest</td>
+                    <td align="left"><div class="form-group">
+                    <textarea class="form-control" rows="3" name="interest" id="interest" placeholder="e.g. Skydiving champion 2017, looking to start a company"></textarea></div></td>
+                </tr></div>
+                <tr>
+                    <td colspan="2"><div class="form-group gray"><button class="btn btn-default" type="submit" onclick="formSubmitter('addfriend', 'message')">Add</button>
+                    <br><span class="error">{{message}}</span>
+                    <p id='message' class='error'></p></div></td>
+                </tr>
+
+            </table>
+        </fieldset>
+    </form>
+{% endblock %}
