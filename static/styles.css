@@ -73,6 +73,7 @@ main div
 
 body{
   background: radial-gradient(circle, #ffd1db, #fbb9d3);
+  text-align: center;
 }
 
 /*Add friend form*/
@@ -91,4 +92,13 @@ td #interest2{
     border: none;
     height: auto;
     resize: none;
+}
+
+main table #friendlist {
+    border-style: hidden;
+    text-align: center;
+}
+
+#friendlist tr:hover{
+    background-color: #ffe1eb;
 }

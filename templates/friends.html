@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Friends
+{% endblock %}
+
+{% block main %}
+    <table align="center" id="friendlist">
+        <tbody>
+            {% for friend in friends %}
+                <tr>
+                    <td>{{friend.name}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

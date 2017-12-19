@@ -33,7 +33,7 @@
                     <div class="collapse navbar-collapse" id="navbar">
                         {% if session.user_id %}
                             <ul class="nav navbar-nav">
-                                <li><a href="{{ url_for('index') }}">Friends</a></li>
+                                <li><a href="{{ url_for('friends') }}">Friends</a></li>
                                 <li><a href="{{ url_for('index') }}">Interests</a></li>
                                 <li><form class="navbar-form" role="search" action="{{ url_for('search') }}" method="post">
                                     <input class="form-control" type="text submit" name="item" id="navBarSearchInput" placeholder="&#x1F50E Search Friend or Interest">

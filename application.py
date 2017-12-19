@@ -1,5 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, url_for, session
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 from flask_session import Session
@@ -136,10 +137,35 @@ def index():
 def search():
     """Search for Friend or Interest"""
     if request.method == "GET":
-        return render_template("search.html", item="Enter search item above")
+        session["item"] = "Solar"
+        item = session.get('item', None)
+        if not item: #from another function
+            return apology("Search field cannot be blank")
+        else:
+            session["item"] = None #clear out variable
+#repeating code starts
+        if item == "":
+            return apology("Invalid Search")
 
+        friends = Friend.query.filter(Friend.name.contains(item), Friend.user_id == session["user_id"]).all()
+        if not friends:
+            return apology("No results!")
+        result = ""
+        for friend in friends:
+            result += friend.name + " "
+
+        #gather interests
+        friend1 = friends[0]
+        notes = Note.query.filter(Note.friend_id==friend1.id).all()
+        interests = []
+        for note in notes:
+            if note.type == "Interest":
+                interests.append(note.content)
+
+        return render_template("search.html", item=result, interests=interests)
+#repeating code ends
     if request.method == "POST":
-        item = request.form["item"]
+        item = request.form["item"] #from html page
         if item == "":
             return apology("Invalid Search")
 
@@ -187,3 +213,20 @@ def addfriend():
             session.pop("friend_id", None)
 
         return render_template("addfriend.html", message = "Friend added!")
+
+@app.route("/friends", methods=["GET", "POST"])
+@login_required
+def friends():
+    "Display user's friends in alphabetical order"
+    if request.method == "GET":
+        friends = Friend.query.filter(Friend.user_id == session["user_id"]).order_by(func.lower(Friend.name)).all()
+        if not friends:
+            return render_template("friends.html")
+
+        return render_template("friends.html", friends = friends)
+
+    #after selecting friend's name
+    elif request.method == "POST":
+        name = "Solar"
+        session["item"] = name
+        return redirect(url_for("search"))
