@@ -230,3 +230,10 @@ def friends():
         name = "Solar"
         session["item"] = name
         return redirect(url_for("search"))
+
+from string import Template
+#http://www.compjour.org/lessons/flask-single-page/multiple-dynamic-routes-in-flask/
+@app.route('/search/<some_place>')
+def page(some_place):
+    HTML_TEMPLATE = Template(render_template("places.html"))
+    return (HTML_TEMPLATE.substitute(place_name=some_place))
