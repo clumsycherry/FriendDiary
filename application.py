@@ -4,9 +4,11 @@ from sqlalchemy import func
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 from flask_session import Session
+from flask_jsglue import JSGlue
 
 # configure application
 app = Flask(__name__)
+JSGlue(app)
 
 # ensure responses aren't cached
 if app.config["DEBUG"]:
@@ -137,55 +139,27 @@ def index():
 def search():
     """Search for Friend or Interest"""
     if request.method == "GET":
-        session["item"] = "Solar"
-        item = session.get('item', None)
-        if not item: #from another function
-            return apology("Search field cannot be blank")
-        else:
-            session["item"] = None #clear out variable
-#repeating code starts
-        if item == "":
-            return apology("Invalid Search")
+        return apology("Enter an item into the search field above")
 
-        friends = Friend.query.filter(Friend.name.contains(item), Friend.user_id == session["user_id"]).all()
-        if not friends:
-            return apology("No results!")
-        result = ""
-        for friend in friends:
-            result += friend.name + " "
-
-        #gather interests
-        friend1 = friends[0]
-        notes = Note.query.filter(Note.friend_id==friend1.id).all()
-        interests = []
-        for note in notes:
-            if note.type == "Interest":
-                interests.append(note.content)
-
-        return render_template("search.html", item=result, interests=interests)
-#repeating code ends
     if request.method == "POST":
         item = request.form["item"] #from html page
         if item == "":
-            return apology("Invalid Search")
+            return apology("Enter an item into the search field above")
 
         #Search by name(not case sensitive)
-        friends = Friend.query.filter(Friend.name.contains(item), Friend.user_id == session["user_id"]).all()
-        if not friends:
+        friend = Friend.query.filter(Friend.name.contains(item), Friend.user_id == session["user_id"]).first()
+        if not friend:
             return apology("No results!")
-        result = ""
-        for friend in friends:
-            result += friend.name + " "
 
-        #gather interests
-        friend1 = friends[0]
-        notes = Note.query.filter(Note.friend_id==friend1.id).all()
-        interests = []
-        for note in notes:
-            if note.type == "Interest":
-                interests.append(note.content)
+        return displayFriend(friend)
 
-        return render_template("search.html", item=result, interests=interests)
+@app.route("/search/<item>", methods=["GET"])
+@login_required
+def search_url(item):
+    friend = Friend.query.filter(Friend.name == item, Friend.user_id == session["user_id"]).first()
+    if not friend:
+        return apology("No results!")
+    return displayFriend(friend)
 
 @app.route("/addfriend", methods=["GET", "POST"])
 @login_required
@@ -214,26 +188,12 @@ def addfriend():
 
         return render_template("addfriend.html", message = "Friend added!")
 
-@app.route("/friends", methods=["GET", "POST"])
+@app.route("/friends", methods=["GET"])
 @login_required
 def friends():
     "Display user's friends in alphabetical order"
-    if request.method == "GET":
-        friends = Friend.query.filter(Friend.user_id == session["user_id"]).order_by(func.lower(Friend.name)).all()
-        if not friends:
-            return render_template("friends.html")
+    friends = Friend.query.filter(Friend.user_id == session["user_id"]).order_by(func.lower(Friend.name)).all()
+    if not friends:
+        return render_template("friends.html")
 
-        return render_template("friends.html", friends = friends)
-
-    #after selecting friend's name
-    elif request.method == "POST":
-        name = "Solar"
-        session["item"] = name
-        return redirect(url_for("search"))
-
-from string import Template
-#http://www.compjour.org/lessons/flask-single-page/multiple-dynamic-routes-in-flask/
-@app.route('/search/<some_place>')
-def page(some_place):
-    HTML_TEMPLATE = Template(render_template("places.html"))
-    return (HTML_TEMPLATE.substitute(place_name=some_place))
+    return render_template("friends.html", friends = friends)
