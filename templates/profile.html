@@ -1,32 +1,31 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Search
+    {{item}}
 {% endblock %}
 
 {% block main %}
-    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
     <div class="header">{{item}}</div><br>
 
     <!-- Friend Info: Name, Interest -->
-    <form action="{{ url_for('addfriend') }}" name="addfriend" method="post">
+    <form action="{{ url_for('search') }}" name="profile" method="post">
         <fieldset>
             <table align="center">
                 <tr>
                     <td align="right">Interest</td>
                     <td align="left"><div class="form-group">
                     {% for interest in interests %}
-                        <textarea class="form-control" name="interest" id="interest2">{{interest}}</textarea>
+                        <textarea class="form-control" name="interest" rows="3" id="interest2">{{interest}}</textarea>
                     {% endfor %}
                     </div></td>
                 </tr>
                 <tr>
-                    <td colspan="2"><div class="form-group gray"><button class="btn btn-default" type="submit" onclick="formSubmitter('addfriend', 'message')">Update</button>
+                    <td colspan="2"><div class="form-group gray"><button class="btn btn-default" type="submit" onclick="formSubmitter('profile', 'message')">Update</button>
                     <br><span class="error">{{message}}</span>
                     <p id='message' class='error'></p></div></td>
                 </tr>
-
             </table>
         </fieldset>
     </form>
+    <div><button class="btn btn-link" id="deleteFriend">Delete {{item}}</button></div>
 {% endblock %}

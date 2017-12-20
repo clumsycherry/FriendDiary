@@ -26,11 +26,11 @@ def addInterest(content=""):
     db.session.add(interest)
     db.session.commit()
 
-def displayFriend(friend):
+def displayFriend(friend, message=""):
     #gather interests
     notes = Note.query.filter(Note.friend_id==friend.id).all()
     interests = []
     for note in notes:
         if note.type == "Interest":
             interests.append(note.content)
-    return render_template("search.html", item=friend.name, interests=interests)
+    return render_template("profile.html", item=friend.name, interests=interests, message=message)

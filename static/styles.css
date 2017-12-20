@@ -90,7 +90,6 @@ td #interest2{
     width:300px;
     background: #fcdeea;
     border: none;
-    height: auto;
     resize: none;
 }
 
@@ -101,4 +100,5 @@ main table #friendlist {
 
 #friendlist tr:hover{
     background-color: #ffe1eb;
+    cursor: pointer;
 }

@@ -121,10 +121,11 @@ def register():
 @app.route("/unregister")
 @login_required
 def unregister():
-    """Unregister user."""
+    """Delete user account."""
     User.query.filter(User.id == session["user_id"]).delete()
     db.session.commit()
-    return render_template("login.html", message="Successfully unregistered!")
+    session.clear()
+    return render_template("login.html", message="Account successfully deleted!")
 
 @app.route("/")
 @login_required
@@ -150,12 +151,12 @@ def search():
         friend = Friend.query.filter(Friend.name.contains(item), Friend.user_id == session["user_id"]).first()
         if not friend:
             return apology("No results!")
-
         return displayFriend(friend)
 
 @app.route("/search/<item>", methods=["GET"])
 @login_required
 def search_url(item):
+    """Display friend selected on friend's list."""
     friend = Friend.query.filter(Friend.name == item, Friend.user_id == session["user_id"]).first()
     if not friend:
         return apology("No results!")
@@ -186,7 +187,7 @@ def addfriend():
             addInterest(interest)
             session.pop("friend_id", None)
 
-        return render_template("addfriend.html", message = "Friend added!")
+        return displayFriend(friend, "{} Added!".format(name))
 
 @app.route("/friends", methods=["GET"])
 @login_required
