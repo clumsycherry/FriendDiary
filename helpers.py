@@ -1,6 +1,6 @@
 import csv
 import urllib.request
-from flask import redirect, render_template, request, session, url_for
+from flask import redirect, render_template, request, session, url_for, jsonify
 from functools import wraps
 from tables import *
 
@@ -33,4 +33,4 @@ def displayFriend(friend, message=""):
     for note in notes:
         if note.type == "Interest":
             interests.append(note.content)
-    return render_template("profile.html", item=friend.name, interests=interests, message=message)
+    return render_template("profile.html", item=friend.name, interests=interests, message=message, id=friend.id)

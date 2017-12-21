@@ -198,3 +198,12 @@ def friends():
         return render_template("friends.html")
 
     return render_template("friends.html", friends = friends)
+
+@app.route("/deleteFriend/<id>", methods=["GET"])
+@login_required
+def deleteFriend(id):
+    "Delete a given person"
+    #friend_id = int(fid)
+    Friend.query.filter(Friend.id == id).delete()
+    db.session.commit()
+    return redirect(url_for("friends"))

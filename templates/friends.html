@@ -4,6 +4,16 @@
     Friends
 {% endblock %}
 
+{% block head %}
+<script language="JavaScript">
+$(document).ready(function(){
+    $('.fName').click(function(){
+        window.location.href = Flask.url_for("search") + '/' + this.innerHTML;
+    });
+});
+</script>
+{% endblock %}
+
 {% block main %}
     <table align="center" id="friendlist">
         <tbody>

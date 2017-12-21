@@ -8,20 +8,16 @@
         <meta charset="utf-8"/>
         <meta content="initial-scale=1, width=device-width" name="viewport"/>
 
-        <!-- documentation at http://getbootstrap.com/, alternative themes at https://www.bootstrapcdn.com/bootswatch/ -->
-        <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/spacelab/bootstrap.min.css" rel="stylesheet"/>
-
-        <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet"/>
-
-        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-
-        <!-- http://stewartjpark.com/Flask-JSGlue/ -->
-        {{ JSGlue.include() }}
-
-        <script src="{{ url_for('static', filename='scripts.js') }}"></script>
-
         <title>Friend Diary | {% block title %}{% endblock %}</title>
 
+        <!-- documentation at http://getbootstrap.com/, alternative themes at https://www.bootstrapcdn.com/bootswatch/ -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/spacelab/bootstrap.min.css" rel="stylesheet"/>
+        <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet"/>
+
+        <!-- JS -->
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        {{ JSGlue.include() }}
+        {% block head %}{% endblock %}
     </head>
 
     <body>
