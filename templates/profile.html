@@ -11,6 +11,31 @@
             $('#message').html("Deleting {{item}}...");
             document.location.href = "/deleteFriend/{{id}}";
         });
+
+        //set cursor at the end of each text area when tabbed in
+        $('textarea').on('keyup', function(event){
+            if (event.which == 9) {
+                var text = $(this).val();
+                $(this).focus().val("").val(text);
+            }
+        });
+
+        //bullet point after enter key pressed: http://output.jsbin.com/uPALIRU/1/
+        $('textarea').on('keydown',function(event){
+            var text = $(this); //this text area
+            switch(event.which){ //event.which returns which key was pressed
+                case 13: //13 is enter key
+                    text.val(text.val()+'\n• ');
+                    return false;
+            }
+        });
+
+        //add first bullet to empty fields
+        $('textarea').click(function(){
+           if($(this).val() == ""){
+               $(this).val("• ");
+           }
+        });
     });
 
 </script>

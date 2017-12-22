@@ -21,31 +21,18 @@ class Friend(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     name = db.Column(db.Text)
-    interests = db.Column(db.Text)
-    dislikes = db.Column(db.Text)
-    quotes = db.Column(db.Text)
-    todos = db.Column(db.Text)
-    plans = db.Column(db.Text)
-    stories = db.Column(db.Text)
-    work = db.Column(db.Text)
-    general = db.Column(db.Text)
+    interests = db.Column(db.Text, default="")
+    dislikes = db.Column(db.Text, default="")
+    quotes = db.Column(db.Text, default="")
+    todos = db.Column(db.Text, default="")
+    plans = db.Column(db.Text, default="")
+    stories = db.Column(db.Text, default="")
+    work = db.Column(db.Text, default="")
+    general = db.Column(db.Text, default="")
 
     def __init__(self, user_id, name):
         self.user_id = user_id
         self.name = name
-
-class Note(db.Model):
-
-    __tablename__ = "notes"
-    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    friend_id = db.Column(db.Integer, db.ForeignKey('friends.id'))
-    type = db.Column(db.Text, nullable = False)
-    content = db.Column(db.Text, nullable = False)
-
-    def __init__(self, friend_id, type, content):
-        self.friend_id = friend_id
-        self.type = type
-        self.content = content
 
 class JsonEncodedDict(db.TypeDecorator):
     """Enables JSON storage by encoding and decoding on the fly."""

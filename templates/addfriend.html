@@ -12,14 +12,36 @@
 
     $(document).ready(function(){
 
+        //cursor to the end when tabbed into text area
+        $('textarea').on('keyup', function(event){
+            if (event.which == 9) {
+                var text;
+                //add first bullet if necessary
+                if($(this).val() == "") {
+                    $(this).focus().val("• ");
+                }
+                else {
+                    text = $(this).val();
+                    $(this).focus().val("").val(text);
+                }
+            }
+        });
+
         //bullet point after enter key pressed: http://output.jsbin.com/uPALIRU/1/
-        $('textarea').on('keydown',function(event){
+        $('textarea').on('keydown', function(event){
             var text = $(this); //this text area
             switch(event.which){ //event.which returns which key was pressed
                 case 13: //13 is enter key
                     text.val(text.val()+'\n• ');
                     return false;
             }
+        });
+
+        //add first bullet to empty fields
+        $('textarea').click(function(){
+           if($(this).val() == ""){
+               $(this).val("• ");
+           }
         });
     });
 </script>
@@ -39,7 +61,7 @@
                 <tr>
                     <td align="right">Interest</td>
                     <td align="left"><div class="form-group">
-                    <textarea class="form-control" rows="3" name="interest" id="interest" placeholder="e.g. Skydiving champion 2017, looking to start a company">• </textarea></div></td>
+                    <textarea class="form-control" rows="3" name="interest" id="interest" placeholder="e.g. Skydiving champion 2017, looking to start a company"></textarea></div></td>
                 </tr></div>
                 <tr>
                     <td colspan="2"><div class="form-group gray"><button class="btn btn-default" type="submit" onclick="formSubmitter('addfriend', 'message')">Add</button>
