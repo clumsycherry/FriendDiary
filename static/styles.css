@@ -102,3 +102,10 @@ main table #friendlist {
     background-color: #ffe1eb;
     cursor: pointer;
 }
+
+#friendlist .fName {
+    font-family: "monotype corsiva";
+    font-size: 24pt;
+    color: #bfa1b8;
+    text-decoration: none;
+}
