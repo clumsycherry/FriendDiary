@@ -6,11 +6,12 @@
 
 {% block head %}
 <script language="JavaScript">
-$(document).ready(function(){
-    $('.fName').click(function(){
-        window.location.href = Flask.url_for("search") + '/' + this.innerHTML;
+    $(document).ready(function(){
+        $('.fName').click(function(){
+            //window.location.href = Flask.url_for("search") + '/' + this.innerHTML;
+            console.log("clicked");
+        });
     });
-});
 </script>
 {% endblock %}
 
@@ -18,9 +19,7 @@ $(document).ready(function(){
     <table align="center" id="friendlist">
         <tbody>
             {% for friend in friends %}
-                <tr>
-                    <td class="fName">{{friend.name}}</td>
-                </tr>
+                <tr><td><a href="{{ url_for('search', id=friend.id) }}" class="fName">{{friend.name}}</a></td></tr>
             {% endfor %}
         </tbody>
     </table>

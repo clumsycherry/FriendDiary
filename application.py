@@ -140,13 +140,18 @@ def index():
 def search():
     """Search for Friend or Interest"""
     if request.method == "GET":
-        return apology("Enter an item into the search field above")
+        #get id from friendlist
+        friend_id = request.args.get("id")
+        #GET can be called from search bar
+        if not friend_id:
+            return apology("No results", "Enter name into search bar and check spelling.")
+        friend = Friend.query.filter(Friend.id==friend_id).first()
+        return displayFriend(friend)
 
     if request.method == "POST":
-        item = request.form["item"] #from html page
-        if item == "":
-            return apology("Enter an item into the search field above")
-
+        item=request.form["item"]
+        if not item:
+            return apology("Enter name into search bar and check spelling.")
         #Search by name(not case sensitive)
         friend = Friend.query.filter(Friend.name.contains(item), Friend.user_id == session["user_id"]).first()
         if not friend:
@@ -208,6 +213,7 @@ def delete():
     return redirect(url_for("friends"))
 
 @app.route("/edit", methods=["POST"])
+@login_required
 def edit():
     """Edit a friend profile"""
     id = request.form.get("id", None)
