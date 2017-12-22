@@ -82,7 +82,7 @@ td #name{
     resize: none;
 }
 
-td #interest{
+td .subhead{
     width:300px;
 }
 
