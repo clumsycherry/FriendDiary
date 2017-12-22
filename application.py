@@ -207,3 +207,19 @@ def deleteFriend(id):
     Friend.query.filter(Friend.id == id).delete()
     db.session.commit()
     return redirect(url_for("friends"))
+
+@app.route("/edit", methods=["POST"])
+def edit():
+    """Edit a friend profile"""
+    id = request.form.get("id")
+    friend = Friend.query.filter(Friend.id==request.form["id"]).first()
+
+    #edit interest
+    interest = request.form["interest"]
+    if not interest.strip().strip("•") == "":
+        friend.interests = interest
+    else:
+        friend.interests = ""
+
+    db.session.commit()
+    return displayFriend(friend, "Updated!")

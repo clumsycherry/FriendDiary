@@ -36,7 +36,14 @@
                $(this).val("• ");
            }
         });
+
+        //update function
+        function formSubmitter(){
+            $('message').html("Updating {{name}}'s profile...");
+        }
     });
+
+
 
 </script>
 {% endblock %}
@@ -45,7 +52,7 @@
     <div class="header">{{item}}</div><br>
 
     <!-- Friend Info: Name, Interest -->
-    <form action="{{ url_for('search') }}" name="profile" method="post">
+    <form action="{{ url_for('edit') }}" name="profile" method="post">
         <fieldset>
             <table align="center">
                 <tr>
@@ -56,6 +63,7 @@
                 </tr>
                 <tr>
                     <td colspan="2"><div class="form-group gray">
+                        <input type="hidden" name="id" value="{{id}}"/>
                         <button class="btn btn-default" type="submit" onclick="formSubmitter('message')">Update</button>
                         <button class="btn btn-default" type="button" id="delete_friend">Delete</button>
                         <br><span class="error">{{message}}</span>
