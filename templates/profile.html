@@ -9,7 +9,7 @@
     $(document).ready(function(){
         $('#delete_friend').click(function(){
             $('#message').html("Deleting {{item}}...");
-            document.location.href = "/deleteFriend/{{id}}";
+//            document.location.href = "/deleteFriend/{{id}}";
         });
 
         //set cursor at the end of each text area when tabbed in
@@ -65,7 +65,7 @@
                     <td colspan="2"><div class="form-group gray">
                         <input type="hidden" name="id" value="{{id}}"/>
                         <button class="btn btn-default" type="submit" onclick="formSubmitter('message')">Update</button>
-                        <button class="btn btn-default" type="button" id="delete_friend">Delete</button>
+                        <a href="{{ url_for('delete', id=id) }}"><button class="btn btn-default" type="button" id="delete_friend">Delete</button></a>
                         <br><span class="error">{{message}}</span>
                         <p id='message' class='error'></p>
                     </div></td>

@@ -199,19 +199,18 @@ def friends():
 
     return render_template("friends.html", friends = friends)
 
-@app.route("/deleteFriend/<id>", methods=["GET"])
+@app.route("/delete")
 @login_required
-def deleteFriend(id):
-    "Delete a given person"
-    #friend_id = int(fid)
-    Friend.query.filter(Friend.id == id).delete()
+def delete():
+    "Delete a friend"
+    Friend.query.filter(Friend.id == request.args.get("id")).delete()
     db.session.commit()
     return redirect(url_for("friends"))
 
 @app.route("/edit", methods=["POST"])
 def edit():
     """Edit a friend profile"""
-    id = request.form.get("id")
+    id = request.form.get("id", None)
     friend = Friend.query.filter(Friend.id==request.form["id"]).first()
 
     #edit interest
