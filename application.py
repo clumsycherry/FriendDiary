@@ -182,7 +182,7 @@ def addfriend():
 
         #add interest if listed
         interest = request.form["interest"]
-        if interest != "":
+        if not interest:
             session["friend_id"] = friend.id
             addInterest(interest)
             session.pop("friend_id", None)
