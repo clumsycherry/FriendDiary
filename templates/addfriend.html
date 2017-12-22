@@ -10,7 +10,18 @@
       document.getElementById(messageTag).innerHTML = "Entering new information...";
     }
 
+    $(document).ready(function(){
 
+        //bullet point after enter key pressed: http://output.jsbin.com/uPALIRU/1/
+        $('textarea').on('keydown',function(event){
+            var text = $(this); //this text area
+            switch(event.which){ //event.which returns which key was pressed
+                case 13: //13 is enter key
+                    text.val(text.val()+'\n• ');
+                    return false;
+            }
+        });
+    });
 </script>
 {% endblock %}
 
@@ -28,7 +39,7 @@
                 <tr>
                     <td align="right">Interest</td>
                     <td align="left"><div class="form-group">
-                    <textarea class="form-control" rows="3" name="interest" id="interest" placeholder="e.g. Skydiving champion 2017, looking to start a company"></textarea></div></td>
+                    <textarea class="form-control" rows="3" name="interest" id="interest" placeholder="e.g. Skydiving champion 2017, looking to start a company">• </textarea></div></td>
                 </tr></div>
                 <tr>
                     <td colspan="2"><div class="form-group gray"><button class="btn btn-default" type="submit" onclick="formSubmitter('addfriend', 'message')">Add</button>

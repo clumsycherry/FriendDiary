@@ -175,17 +175,17 @@ def addfriend():
         if name == "":
             return render_template("addfriend.html", message = "Must fill in a friend's name")
 
-        #add friend
+        #create friend
         friend = Friend(session["user_id"], name)
-        db.session.add(friend)
-        db.session.commit()
 
         #add interest if listed
         interest = request.form["interest"]
-        if not interest:
-            session["friend_id"] = friend.id
-            addInterest(interest)
-            session.pop("friend_id", None)
+        if not interest.strip().strip("•") == "":
+            friend.interests = interest
+
+        #add to db
+        db.session.add(friend)
+        db.session.commit()
 
         return displayFriend(friend, "{} Added!".format(name))
 
@@ -195,7 +195,7 @@ def friends():
     "Display user's friends in alphabetical order"
     friends = Friend.query.filter(Friend.user_id == session["user_id"]).order_by(func.lower(Friend.name)).all()
     if not friends:
-        return render_template("friends.html")
+        return apology("Add friends first!")
 
     return render_template("friends.html", friends = friends)
 
