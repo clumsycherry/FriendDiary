@@ -6,10 +6,6 @@
 
 {% block head %}
 <script language="JavaScript">
-    function formSubmitter(formTag, messageTag){
-      document.getElementById(messageTag).innerHTML = "Entering new information...";
-    }
-
     $(document).ready(function(){
 
         //cursor to the end when tabbed into text area
@@ -43,6 +39,11 @@
                $(this).val("• ");
            }
         });
+
+        //assure user Submit button is clicked
+        $('#addname').click(function(){
+            $('message').html("Adding {{name}}...");
+        });
     });
 </script>
 {% endblock %}
@@ -64,7 +65,7 @@
                     <textarea class="form-control" rows="3" name="interest" id="interest" placeholder="e.g. Skydiving champion 2017, looking to start a company"></textarea></div></td>
                 </tr></div>
                 <tr>
-                    <td colspan="2"><div class="form-group gray"><button class="btn btn-default" type="submit" onclick="formSubmitter('addfriend', 'message')">Add</button>
+                    <td colspan="2"><div class="form-group gray"><button class="btn btn-default" type="submit" id="addname">Add</button>
                     <br><span class="error">{{message}}</span>
                     <p id='message' class='error'></p></div></td>
                 </tr>

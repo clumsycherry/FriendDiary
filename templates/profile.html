@@ -7,9 +7,15 @@
 {% block head %}
 <script language="JavaScript">
     $(document).ready(function(){
+
+        //Assure user delete button is clicked
         $('#delete_friend').click(function(){
             $('#message').html("Deleting {{item}}...");
-//            document.location.href = "/deleteFriend/{{id}}";
+        });
+
+        //assure user Update button is clicked
+        $('#update').click(function(){
+            $('message').html("Updating {{name}}'s profile...");
         });
 
         //set cursor at the end of each text area when tabbed in
@@ -36,11 +42,6 @@
                $(this).val("• ");
            }
         });
-
-        //update function
-        function formSubmitter(){
-            $('message').html("Updating {{name}}'s profile...");
-        }
     });
 
 
@@ -64,7 +65,7 @@
                 <tr>
                     <td colspan="2"><div class="form-group gray">
                         <input type="hidden" name="id" value="{{id}}"/>
-                        <button class="btn btn-default" type="submit" onclick="formSubmitter('message')">Update</button>
+                        <button class="btn btn-default" type="submit" id="update">Update</button>
                         <a href="{{ url_for('delete', id=id) }}"><button class="btn btn-default" type="button" id="delete_friend">Delete</button></a>
                         <br><span class="error">{{message}}</span>
                         <p id='message' class='error'></p>
