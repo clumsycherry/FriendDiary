@@ -192,6 +192,11 @@ def addfriend():
         db.session.add(friend)
         db.session.commit()
 
+        #reset friend from db for updates/deletion
+        friend = Friend.query.order_by(Friend.id.desc()).first()
+        if Friend.query.filter(Friend.name==friend.name).count() > 1:
+            message = "{} Added!\nFYI: There are now more than 1 {} on your friend list".format(name, name)
+            return displayFriend(friend, message)
         return displayFriend(friend, "{} Added!".format(name))
 
 @app.route("/friends", methods=["GET"])
