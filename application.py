@@ -234,7 +234,7 @@ def edit():
     friend = Friend.query.filter(Friend.id==id).first()
 
     #clear friend's data in bullet point table
-    Bullets.query.filter(Bullets.friend_id==id).delete()
+    Bullet.query.filter(Bullet.friend_id==id).delete()
 
     #update interests
     session["friend_id"] = id

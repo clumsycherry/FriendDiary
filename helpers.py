@@ -66,5 +66,8 @@ def check(value, category=""):
                     #add current bullet point to hashtag
                     b = Bullet(hashtag.id, session["friend_id"], category, bullet)
                     db.session.add(b)
+                    b = Bullet.query.order_by(Bullet.id.desc()).first()
+                    hashtag.bullet_ids = hashtag.bullet_ids + [b.id]
+                    db.session.commit()
     db.session.commit()
     return value

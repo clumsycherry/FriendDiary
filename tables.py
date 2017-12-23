@@ -1,6 +1,7 @@
 from application import db
 import json
 from sqlalchemy.ext import mutable
+from sqlalchemy_utils import ScalarListType
 
 class User(db.Model):
 
@@ -41,9 +42,11 @@ class Hashtag(db.Model):
     __tablename__ = "hashtags"
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     hashtag = db.Column(db.Text, unique = True)
+    bullet_ids = db.Column(ScalarListType(int))
 
     def __init__(self, hashtag):
         self.hashtag = hashtag
+        self.bullet_ids = []
 
 #Bullet points
 class Bullet(db.Model):
