@@ -1,4 +1,6 @@
 import csv
+import re
+import sys
 import urllib.request
 from flask import render_template, request, session, redirect, url_for
 from functools import wraps
@@ -36,9 +38,33 @@ def displayFriend(friend, message=""):
         id=friend.id,
         message=message)
 
-def check(value):
+def check(value, category=""):
     """Returns a textarea value if not blank"""
     #having only bullet points is considered blank
     if value.strip().strip("•") == "":
         return ""
+
+    #Special characters: http://www.regular-expressions.info/dotnet.html
+    #break into bullet points
+    bullets = value.split("•")
+    for bullet in bullets:
+        words = bullet.split()
+        for word in words:
+            #check for hashtags
+            if word[0] == "#" and word != "#":
+                word = word.lower()
+
+                #check for special characters and contains letters
+                if re.match("^[a-z0-9]*$", word[1:]):
+                    hashtag = Hashtag.query.filter(Hashtag.hashtag == word).first()
+
+                    #create hashtag if hashtag doesn't exist yet
+                    if hashtag is None:
+                        db.session.add(Hashtag(word))
+                        hashtag = Hashtag.query.order_by(Hashtag.id.desc()).first()
+
+                    #add current bullet point to hashtag
+                    b = Bullet(hashtag.id, session["friend_id"], category, bullet)
+                    db.session.add(b)
+    db.session.commit()
     return value

@@ -182,24 +182,24 @@ def addfriend():
 
         #create friend
         friend = Friend(session["user_id"], name)
-
-        #add notes if listed
-        friend.interests = check(request.form["interest"])
-        friend.dislikes = check(request.form["dislike"])
-        friend.quotes = check(request.form["quote"])
-        friend.todos = check(request.form["todo"])
-        friend.plans = check(request.form["plan"])
-        friend.stories = check(request.form["story"])
-        friend.events = check(request.form["event"])
-        friend.work = check(request.form["work"])
-        friend.general = check(request.form["note"])
-
-        #add to db
         db.session.add(friend)
-        db.session.commit()
 
-        #reset friend from db for updates/deletion
+        #grab current/most recent friend from db
         friend = Friend.query.order_by(Friend.id.desc()).first()
+
+        #add notes if listed by category
+        session["friend_id"] = friend.id
+        friend.interests = check(request.form["interest"], "interest")
+        friend.dislikes = check(request.form["dislike"], "dislike")
+        friend.quotes = check(request.form["quote"], "quote")
+        friend.todos = check(request.form["todo"], "todo")
+        friend.plans = check(request.form["plan"], "plan")
+        friend.stories = check(request.form["story"], "story")
+        friend.events = check(request.form["event"], "event")
+        friend.work = check(request.form["work"], "work")
+        friend.general = check(request.form["note"], "note")
+        db.session.commit()
+        session.pop("friend_id", None)
 
         #check for duplicate entries
         if Friend.query.filter(Friend.name==friend.name).count() > 1:
@@ -233,16 +233,21 @@ def edit():
     id = request.args.get("id", None)
     friend = Friend.query.filter(Friend.id==id).first()
 
+    #clear friend's data in bullet point table
+    Bullets.query.filter(Bullets.friend_id==id).delete()
+
     #update interests
-    friend.interests = check(request.form["interest"])
-    friend.dislikes = check(request.form["dislike"])
-    friend.quotes = check(request.form["quote"])
-    friend.todos = check(request.form["todo"])
-    friend.plans = check(request.form["plan"])
-    friend.stories = check(request.form["story"])
-    friend.events = check(request.form["event"])
-    friend.work = check(request.form["work"])
-    friend.general = check(request.form["note"])
+    session["friend_id"] = id
+    friend.interests = check(request.form["interest"], "interest")
+    friend.dislikes = check(request.form["dislike"], "dislike")
+    friend.quotes = check(request.form["quote"], "quote")
+    friend.todos = check(request.form["todo"], "todo")
+    friend.plans = check(request.form["plan"], "plan")
+    friend.stories = check(request.form["story"], "story")
+    friend.events = check(request.form["event"], "event")
+    friend.work = check(request.form["work"], "work")
+    friend.general = check(request.form["note"], "note")
     db.session.commit()
+    session.pop("friend_id", None)
 
     return displayFriend(friend, "Updated!")
