@@ -86,7 +86,7 @@ td .subhead{
     width:300px;
 }
 
-td #interest2{
+td #variables{
     width:300px;
     background: #fcdeea;
     border: none;
@@ -108,4 +108,8 @@ main table #friendlist {
     font-size: 24pt;
     color: #bfa1b8;
     text-decoration: none;
+}
+
+td #message {
+    white-space: pre-wrap;
 }

@@ -25,5 +25,20 @@ def displayFriend(friend, message=""):
     return render_template("profile.html",
         item=friend.name,
         interest=friend.interests,
+        dislike=friend.dislikes,
+        quote=friend.quotes,
+        todo=friend.todos,
+        plan=friend.plans,
+        story=friend.stories,
+        event=friend.events,
+        work=friend.work,
+        note=friend.general,
         id=friend.id,
         message=message)
+
+def check(value):
+    """Returns a textarea value if not blank"""
+    #having only bullet points is considered blank
+    if value.strip().strip("•") == "":
+        return ""
+    return value

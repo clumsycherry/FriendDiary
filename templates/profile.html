@@ -53,18 +53,65 @@
     <div class="header">{{item}}</div><br>
 
     <!-- Friend Info: Name, Interest -->
-    <form action="{{ url_for('edit') }}" name="profile" method="post">
+    <form action="{{ url_for('edit', id=id) }}" name="profile" method="post">
         <fieldset>
             <table align="center">
                 <tr>
-                    <td align="right">Interest</td>
+                    <td align="right">Interests</td>
                     <td align="left"><div class="form-group">
-                        <textarea class="form-control" name="interest" rows="3" id="interest2">{{interest}}</textarea>
+                        <textarea class="form-control" name="interest" rows="3" id="variables">{{interest}}</textarea>
+                    </div></td>
+                </tr>
+                <tr>
+                    <td align="right">Dislikes</td>
+                    <td align="left"><div class="form-group">
+                        <textarea class="form-control" name="dislike" rows="3" id="variables">{{dislike}}</textarea>
+                    </div></td>
+                </tr>
+                <tr>
+                    <td align="right">Life Plans</td>
+                    <td align="left"><div class="form-group">
+                        <textarea class="form-control" name="plan" rows="3" id="variables">{{plan}}</textarea>
+                    </div></td>
+                </tr>
+                <tr>
+                    <td align="right">Stories</td>
+                    <td align="left"><div class="form-group">
+                        <textarea class="form-control" name="story" rows="3" id="variables">{{story}}</textarea>
+                    </div></td>
+                </tr>
+                <tr>
+                    <td align="right">Potential To-Do's</td>
+                    <td align="left"><div class="form-group">
+                        <textarea class="form-control" name="todo" rows="3" id="variables">{{todo}}</textarea>
+                    </div></td>
+                </tr>
+                <tr>
+                    <td align="right">Shared Events</td>
+                    <td align="left"><div class="form-group">
+                        <textarea class="form-control" name="event" rows="3" id="variables">{{event}}</textarea>
+                    </div></td>
+                </tr>
+                <tr>
+                    <td align="right">Work / School</td>
+                    <td align="left"><div class="form-group">
+                        <textarea class="form-control" name="work" rows="3" id="variables">{{work}}</textarea>
+                    </div></td>
+                </tr>
+                <tr>
+                    <td align="right">Inspiring Quotes</td>
+                    <td align="left"><div class="form-group">
+                        <textarea class="form-control" name="quote" rows="3" id="variables">{{quote}}</textarea>
+                    </div></td>
+                </tr>
+                <tr>
+                    <td align="right">General Notes</td>
+                    <td align="left"><div class="form-group">
+                        <textarea class="form-control" name="note" rows="3" id="variables">{{note}}</textarea>
                     </div></td>
                 </tr>
                 <tr>
                     <td colspan="2"><div class="form-group gray">
-                        <input type="hidden" name="id" value="{{id}}"/>
                         <button class="btn btn-default" type="submit" id="update">Update</button>
                         <a href="{{ url_for('delete', id=id) }}"><button class="btn btn-default" type="button" id="delete_friend">Delete</button></a>
                         <br><span class="error">{{message}}</span>

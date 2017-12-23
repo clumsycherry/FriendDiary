@@ -158,14 +158,14 @@ def search():
             return apology("No results!")
         return displayFriend(friend)
 
-@app.route("/search/<item>", methods=["GET"])
-@login_required
-def search_url(item):
-    """Display friend selected on friend's list."""
-    friend = Friend.query.filter(Friend.name == item, Friend.user_id == session["user_id"]).first()
-    if not friend:
-        return apology("No results!")
-    return displayFriend(friend)
+#@app.route("/search/<item>", methods=["GET"])
+#@login_required
+#def search_url(item):
+#    """Display friend selected on friend's list."""
+#    friend = Friend.query.filter(Friend.name == item, Friend.user_id == session["user_id"]).first()
+#    if not friend:
+#        return apology("No results!")
+#    return displayFriend(friend)
 
 @app.route("/addfriend", methods=["GET", "POST"])
 @login_required
@@ -183,10 +183,16 @@ def addfriend():
         #create friend
         friend = Friend(session["user_id"], name)
 
-        #add interest if listed
-        interest = request.form["interest"]
-        if not interest.strip().strip("•") == "":
-            friend.interests = interest
+        #add notes if listed
+        friend.interests = check(request.form["interest"])
+        friend.dislikes = check(request.form["dislike"])
+        friend.quotes = check(request.form["quote"])
+        friend.todos = check(request.form["todo"])
+        friend.plans = check(request.form["plan"])
+        friend.stories = check(request.form["story"])
+        friend.events = check(request.form["event"])
+        friend.work = check(request.form["work"])
+        friend.general = check(request.form["note"])
 
         #add to db
         db.session.add(friend)
@@ -194,9 +200,12 @@ def addfriend():
 
         #reset friend from db for updates/deletion
         friend = Friend.query.order_by(Friend.id.desc()).first()
+
+        #check for duplicate entries
         if Friend.query.filter(Friend.name==friend.name).count() > 1:
-            message = "{} Added!\nFYI: There are now more than 1 {} on your friend list".format(name, name)
+            message = "{} Added! Note: There are now more than 1 {}s on your friend list".format(name, name)
             return displayFriend(friend, message)
+
         return displayFriend(friend, "{} Added!".format(name))
 
 @app.route("/friends", methods=["GET"])
@@ -221,15 +230,19 @@ def delete():
 @login_required
 def edit():
     """Edit a friend profile"""
-    id = request.form.get("id", None)
-    friend = Friend.query.filter(Friend.id==request.form["id"]).first()
+    id = request.args.get("id", None)
+    friend = Friend.query.filter(Friend.id==id).first()
 
-    #edit interest
-    interest = request.form["interest"]
-    if not interest.strip().strip("•") == "":
-        friend.interests = interest
-    else:
-        friend.interests = ""
-
+    #update interests
+    friend.interests = check(request.form["interest"])
+    friend.dislikes = check(request.form["dislike"])
+    friend.quotes = check(request.form["quote"])
+    friend.todos = check(request.form["todo"])
+    friend.plans = check(request.form["plan"])
+    friend.stories = check(request.form["story"])
+    friend.events = check(request.form["event"])
+    friend.work = check(request.form["work"])
+    friend.general = check(request.form["note"])
     db.session.commit()
+
     return displayFriend(friend, "Updated!")

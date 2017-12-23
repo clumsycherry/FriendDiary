@@ -27,6 +27,7 @@ class Friend(db.Model):
     todos = db.Column(db.Text, default="")
     plans = db.Column(db.Text, default="")
     stories = db.Column(db.Text, default="")
+    events = db.Column(db.Text, default="")
     work = db.Column(db.Text, default="")
     general = db.Column(db.Text, default="")
 
@@ -34,33 +35,15 @@ class Friend(db.Model):
         self.user_id = user_id
         self.name = name
 
-class JsonEncodedDict(db.TypeDecorator):
-    """Enables JSON storage by encoding and decoding on the fly."""
-    #SQL Json storage code by Michael Cho: https://www.michaelcho.me/article/json-field-type-in-sqlalchemy-flask-python
-    impl = db.Text
-
-    def process_bind_param(self, value, dialect):
-        if value is None:
-            return '{}'
-        else:
-            return json.dumps(value)
-
-    def process_result_value(self, value, dialect):
-        if value is None:
-            return {}
-        else:
-            return json.loads(value)
-
-mutable.MutableDict.associate_with(JsonEncodedDict)
-
 class Hashtag(db.Model):
 
     __tablename__ = "hashtags"
-    hashtag = db.Column(db.Text, primary_key = True)
-    notes = db.Column(JsonEncodedDict, nullable = False) #json storage of all notes with this hashtag
+    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    hashtag = db.Column(db.Text, unique = True)
 
-    def __init__(self, hashtag, notes):
+    def __init__(self, hashtag):
         self.hashtag = hashtag
-        self.notes = notes
+
+
 
 db.create_all()
