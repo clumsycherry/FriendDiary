@@ -63,11 +63,14 @@ def check(value, category=""):
                         db.session.add(Hashtag(word))
                         hashtag = Hashtag.query.order_by(Hashtag.id.desc()).first()
 
-                    #add current bullet point to hashtag
-                    b = Bullet(hashtag.id, session["friend_id"], category, bullet)
-                    db.session.add(b)
-                    b = Bullet.query.order_by(Bullet.id.desc()).first()
-                    hashtag.bullet_ids = hashtag.bullet_ids + [b.id]
-                    db.session.commit()
+                    #check to see if the same hashtag exists in the same bullet point
+
+                    if Bullet.query.filter(Bullet.friend_id==session["friend_id"], Bullet.hashtag_id == hashtag.id).count() < 1:
+                        #if unique, add current bullet point to hashtag
+                        b = Bullet(hashtag.id, session["friend_id"], category, bullet)
+                        db.session.add(b)
+                        b = Bullet.query.order_by(Bullet.id.desc()).first()
+                        hashtag.bullet_ids = hashtag.bullet_ids + [b.id]
+
     db.session.commit()
     return value
