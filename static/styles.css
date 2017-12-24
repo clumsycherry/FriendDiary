@@ -78,19 +78,12 @@ body{
 
 /*Add friend form*/
 td #name{
-    width:300px;
+    width: 300px;
     resize: none;
 }
 
-td .subhead{
+.subhead{
     width:300px;
-}
-
-td #variables{
-    width:300px;
-    background: #fcdeea;
-    border: none;
-    resize: none;
 }
 
 main table #friendlist {

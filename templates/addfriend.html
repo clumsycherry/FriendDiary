@@ -7,17 +7,15 @@
 {% block head %}
 <script language="JavaScript">
     $(document).ready(function(){
-
         //cursor to the end when tabbed into text area
         $('textarea').on('keyup', function(event){
             if (event.which == 9) {
-                var text;
                 //add first bullet if necessary
-                if($(this).val() == "") {
+                if($.trim($(this).val()) == "") {
                     $(this).focus().val("• ");
                 }
                 else {
-                    text = $(this).val();
+                    var text = $(this).val();
                     $(this).focus().val("").val(text);
                 }
             }
@@ -51,7 +49,7 @@
 {% block main %}
     <div class="header">Add Friend...</div><br>
 
-    <!-- Friend Info: Name, Interest -->
+    <!-- Add Friend Info -->
     <form action="{{ url_for('addfriend') }}" name="addfriend" method="post">
         <fieldset>
             <table align="center">

@@ -8,26 +8,22 @@
 <script language="JavaScript">
     $(document).ready(function(){
 
-        //Assure user delete button is clicked
-        $('#delete_friend').click(function(){
-            $('#message').html("Deleting {{item}}...");
-        });
-
-        //assure user Update button is clicked
-        $('#update').click(function(){
-            $('message').html("Updating {{name}}'s profile...");
-        });
-
-        //set cursor at the end of each text area when tabbed in
+        //cursor to the end when tabbed into text area
         $('textarea').on('keyup', function(event){
             if (event.which == 9) {
-                var text = $(this).val();
-                $(this).focus().val("").val(text);
+                //add first bullet if necessary
+                if($.trim($(this).val()) == "") {
+                    $(this).focus().val("• ");
+                }
+                else {
+                    var text = $(this).val();
+                    $(this).focus().val("").val(text);
+                }
             }
         });
 
         //bullet point after enter key pressed: http://output.jsbin.com/uPALIRU/1/
-        $('textarea').on('keydown',function(event){
+        $('textarea').on('keydown', function(event){
             var text = $(this); //this text area
             switch(event.which){ //event.which returns which key was pressed
                 case 13: //13 is enter key
@@ -42,73 +38,66 @@
                $(this).val("• ");
            }
         });
+
+        //Assure user delete button is clicked
+        $('#delete_friend').click(function(){
+            $('#message').html("Deleting {{item}}...");
+        });
+
+        //assure user Update button is clicked
+        $('#update').click(function(){
+            $('message').html("Updating {{name}}'s profile...");
+        });
+
+        $('textarea').css({'border':'none'});
+        $('textarea').css({'resize': 'none'});
+        $('textarea').css({'background-color':'#fcdeea'});
     });
-
-
-
 </script>
 {% endblock %}
 
 {% block main %}
     <div class="header">{{item}}</div><br>
 
-    <!-- Friend Info: Name, Interest -->
+    <!-- Display Friend Info -->
     <form action="{{ url_for('edit', id=id) }}" name="profile" method="post">
         <fieldset>
             <table align="center">
                 <tr>
                     <td align="right">Interests</td>
-                    <td align="left"><div class="form-group">
-                        <textarea class="form-control" name="interest" rows="3" id="variables">{{interest}}</textarea>
-                    </div></td>
+                    <td align="left"><div class="form-group"><textarea class="form-control subhead completed" rows="3" name="interest" id="completed">{{interest}}</textarea></div></td>
                 </tr>
                 <tr>
                     <td align="right">Dislikes</td>
-                    <td align="left"><div class="form-group">
-                        <textarea class="form-control" name="dislike" rows="3" id="variables">{{dislike}}</textarea>
-                    </div></td>
+                    <td align="left"><div class="form-group"><textarea class="form-control subhead completed" rows="3" name="dislike" id="completed">{{dislike}}</textarea></div></td>
                 </tr>
                 <tr>
                     <td align="right">Life Plans</td>
-                    <td align="left"><div class="form-group">
-                        <textarea class="form-control" name="plan" rows="3" id="variables">{{plan}}</textarea>
-                    </div></td>
+                    <td align="left"><div class="form-group"><textarea class="form-control subhead completed" rows="3" name="plan" id="completed">{{plan}}</textarea></div></td>
                 </tr>
                 <tr>
                     <td align="right">Stories</td>
-                    <td align="left"><div class="form-group">
-                        <textarea class="form-control" name="story" rows="3" id="variables">{{story}}</textarea>
-                    </div></td>
+                    <td align="left"><div class="form-group"><textarea class="form-control subhead completed" rows="3" name="story" id="completed">{{story}}</textarea></div></td>
                 </tr>
                 <tr>
                     <td align="right">Potential To-Do's</td>
-                    <td align="left"><div class="form-group">
-                        <textarea class="form-control" name="todo" rows="3" id="variables">{{todo}}</textarea>
-                    </div></td>
+                    <td align="left"><div class="form-group"><textarea class="form-control subhead completed" rows="3" name="todo" id="completed">{{todo}}</textarea></div></td>
                 </tr>
                 <tr>
                     <td align="right">Shared Events</td>
-                    <td align="left"><div class="form-group">
-                        <textarea class="form-control" name="event" rows="3" id="variables">{{event}}</textarea>
-                    </div></td>
+                    <td align="left"><div class="form-group"><textarea class="form-control subhead completed" rows="3" name="event" id="completed">{{event}}</textarea></div></td>
                 </tr>
                 <tr>
                     <td align="right">Work / School</td>
-                    <td align="left"><div class="form-group">
-                        <textarea class="form-control" name="work" rows="3" id="variables">{{work}}</textarea>
-                    </div></td>
+                    <td align="left"><div class="form-group"><textarea class="form-control subhead completed" rows="3" name="work" id="completed">{{work}}</textarea></textarea></div></td>
                 </tr>
                 <tr>
                     <td align="right">Inspiring Quotes</td>
-                    <td align="left"><div class="form-group">
-                        <textarea class="form-control" name="quote" rows="3" id="variables">{{quote}}</textarea>
-                    </div></td>
+                    <td align="left"><div class="form-group"><textarea class="form-control subhead completed" rows="3" name="quote" id="completed">{{quote}}</textarea></div></td>
                 </tr>
                 <tr>
                     <td align="right">General Notes</td>
-                    <td align="left"><div class="form-group">
-                        <textarea class="form-control" name="note" rows="3" id="variables">{{note}}</textarea>
-                    </div></td>
+                    <td align="left"><div class="form-group"><textarea class="form-control subhead completed" rows="3" name="note" id="completed">{{note}}</textarea></div></td>
                 </tr>
                 <tr>
                     <td colspan="2"><div class="form-group gray">
