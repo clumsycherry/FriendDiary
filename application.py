@@ -5,6 +5,7 @@ from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 from flask_session import Session
 from flask_jsglue import JSGlue
+from sqlalchemy.orm import load_only
 
 # configure application
 app = Flask(__name__)
@@ -233,8 +234,18 @@ def edit():
     id = request.args.get("id", None)
     friend = Friend.query.filter(Friend.id==id).first()
 
-    #clear friend's data in bullet point table
-    Bullet.query.filter(Bullet.friend_id==id).delete()
+    #clear bullet points stored for this friend
+    if Bullet.query.filter(Bullet.friend_id==id).count() > 0:
+        bps = Bullet.query.filter(Bullet.friend_id==id).all()
+        for bp in bps:
+            b_ids = Hashtag.query.filter(Hashtag.id==bp.hashtag_id).first().bullet_ids
+            if bp.id in b_ids:
+                b_ids.remove(bp.id)
+                Hashtag.query.filter(Hashtag.id==bp.hashtag_id).first().bullet_ids = b_ids
+                db.session.commit()
+
+        Bullet.query.filter(Bullet.friend_id==id).delete()
+
 
     #update interests
     session["friend_id"] = id
