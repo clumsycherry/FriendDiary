@@ -35,7 +35,6 @@ main p
     color: #bfa1b8;
 }
 
-
 main .form-control
 {
     /* center form controls */
@@ -74,6 +73,10 @@ main div
 body{
   background: radial-gradient(circle, #ffd1db, #fbb9d3);
   text-align: center;
+}
+
+main td{
+    display: block;
 }
 
 /*Add friend form*/

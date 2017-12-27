@@ -41,13 +41,17 @@ def displayFriend(friend, message=""):
 def check(value, category=""):
     """Returns a textarea value if not blank"""
     #having only bullet points is considered blank
-    if value.strip().strip("•") == "":
+    if value.strip().strip("•")=="":
+        return ""
+    #having multiple bullet points is also considered blank
+    if "".join(value.split("•")).strip() == "":
         return ""
 
     #Special characters: http://www.regular-expressions.info/dotnet.html
     #break into bullet points
     bullets = value.split("•")
     for bullet in bullets:
+        current_hashtag = "" #for checking if hashtag is still the same
         words = bullet.split()
         for word in words:
             #check for hashtags
@@ -56,21 +60,40 @@ def check(value, category=""):
 
                 #check for special characters and contains letters
                 if re.match("^[a-z0-9]*$", word[1:]):
-                    hashtag = Hashtag.query.filter(Hashtag.hashtag == word).first()
 
                     #create hashtag if hashtag doesn't exist yet
+                    hashtag = Hashtag.query.filter(Hashtag.hashtag == word).first()
                     if hashtag is None:
                         db.session.add(Hashtag(word))
                         hashtag = Hashtag.query.order_by(Hashtag.id.desc()).first()
 
-                    #check to see if the same hashtag exists in the same bullet point
-
-                    if Bullet.query.filter(Bullet.friend_id==session["friend_id"], Bullet.hashtag_id == hashtag.id).count() < 1:
-                        #if unique, add current bullet point to hashtag
+                    #add bullet entry if the hashtag doesn't already exist in the current bullet point
+                    if word != current_hashtag:
                         b = Bullet(hashtag.id, session["friend_id"], category, bullet)
                         db.session.add(b)
                         b = Bullet.query.order_by(Bullet.id.desc()).first()
+
+                        #keep track of bullet and user ids for each hashtag
                         hashtag.bullet_ids = hashtag.bullet_ids + [b.id]
+
+                        #add user id to hashtag table
+                        if session["user_id"] not in hashtag.user_ids:
+                            hashtag.user_ids = hashtag.user_ids + [session["user_id"]]
+                    db.session.commit()
+                    current_hashtag = word
 
     db.session.commit()
     return value
+
+def categorize(bullets, cat=""):
+    """Returns list of dict objects after filtering through bullet points for a specific category."""
+    bulletlist = []
+    q = bullets.filter_by(category=cat).all()
+    for bullet in q:
+        d = {
+            "name": Friend.query.get(bullet.friend_id).name,
+            "id": bullet.friend_id,
+            "content": bullet.content
+        }
+        bulletlist.append(d)
+    return bulletlist

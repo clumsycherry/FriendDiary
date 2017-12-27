@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Hashtags
+{% endblock %}
+
+{% block main %}
+    <table align="center" id="hashtags">
+        <tbody>
+            {% for hashtag in hashtags %}
+                <tr><td><a href="{{ url_for('tag', h_id=hashtag.id) }}" class="htag">{{hashtag.hashtag}}</a></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

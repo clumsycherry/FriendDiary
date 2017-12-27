@@ -134,7 +134,9 @@ def index():
     """Index"""
     #get user's name
     user = User.query.filter(User.id==session["user_id"]).first()
-    return render_template("index.html", name=user.name)
+    #count friends
+    count = Friend.query.filter(Friend.user_id == session["user_id"]).count()
+    return render_template("index.html", name=user.name, count=count)
 
 @app.route("/search", methods=["GET","POST"])
 @login_required
@@ -158,15 +160,6 @@ def search():
         if not friend:
             return apology("No results!")
         return displayFriend(friend)
-
-#@app.route("/search/<item>", methods=["GET"])
-#@login_required
-#def search_url(item):
-#    """Display friend selected on friend's list."""
-#    friend = Friend.query.filter(Friend.name == item, Friend.user_id == session["user_id"]).first()
-#    if not friend:
-#        return apology("No results!")
-#    return displayFriend(friend)
 
 @app.route("/addfriend", methods=["GET", "POST"])
 @login_required
@@ -235,7 +228,7 @@ def edit():
     friend = Friend.query.filter(Friend.id==id).first()
 
     #clear bullet points stored for this friend
-    if Bullet.query.filter(Bullet.friend_id==id).count() > 0:
+    if Bullet.query.all() != None and Bullet.query.filter(Bullet.friend_id==id).count() > 0:
         bps = Bullet.query.filter(Bullet.friend_id==id).all()
         for bp in bps:
             b_ids = Hashtag.query.filter(Hashtag.id==bp.hashtag_id).first().bullet_ids
@@ -262,3 +255,34 @@ def edit():
     session.pop("friend_id", None)
 
     return displayFriend(friend, "Updated!")
+
+@app.route("/tags", methods=["GET"])
+@login_required
+def tags():
+    """Display hashtags alphabetically"""
+    hashtags = Hashtag.query.order_by(Hashtag.hashtag.asc())
+    taglist = []
+    for hashtag in hashtags:
+        if session["user_id"] in hashtag.user_ids:
+            taglist.append(hashtag)
+    return render_template("tags.html", hashtags = taglist)
+
+@app.route("/tag", methods=["GET"])
+@login_required
+def tag():
+    """Display bullet points associated to a specific hashtag"""
+    id = request.args.get("h_id")
+    bullets = Bullet.query.filter(Bullet.hashtag_id == id)
+
+    #gather friends that are tagged in each category
+    interests = categorize(bullets, 'interest')
+    dislikes = categorize(bullets, 'dislike')
+    quotes = categorize(bullets, 'quote')
+    todos= categorize(bullets, 'todo')
+    plans = categorize(bullets, 'plan')
+    stories = categorize(bullets, 'story')
+    events = categorize(bullets, 'event')
+    work = categorize(bullets, 'work')
+    general = categorize(bullets, 'note')
+
+    return render_template("tag.html", bullets=bullets, interests=interests, dislikes=dislikes, quotes=quotes, todos=todos, plans=plans, stories=stories, events=events, work=work, general=general)

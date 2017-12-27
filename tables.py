@@ -43,10 +43,12 @@ class Hashtag(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     hashtag = db.Column(db.Text, unique = True)
     bullet_ids = db.Column(ScalarListType(int))
+    user_ids = db.Column(ScalarListType(int))
 
     def __init__(self, hashtag):
         self.hashtag = hashtag
         self.bullet_ids = []
+        self.user_ids = []
 
 #Bullet points
 class Bullet(db.Model):
