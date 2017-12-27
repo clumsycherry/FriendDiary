@@ -5,85 +5,79 @@
 {% endblock %}
 
 {% block main %}
-    <table align="center" id="hashtags">
-        <th>
-            <tr>
-                <td>Category</td>
-                <td>Friends</td>
-            </tr>
-        </th>
+    <table align="center" id="hashtag">
         <tbody>
             <tr>
-                <td>Interests</td>
-                <td>
+                <td class="subhead">Interests</td>
+                <td class="content"><ul>
                     {% for interest in interests %}
-                    • <a href="{{ url_for('search', id=interest.id)}}"><b class="white">{{interest.name}}:</b></a> {{interest.content}}
+                    <li><a href="{{ url_for('search', id=interest.id)}}"><b class="white">{{interest.name}}:</b></a> {{interest.content}}</li>
                     {% endfor %}
-                </td>
+                </ul></td>
             </tr>
             <tr>
-                <td>Dislikes</td>
-                <td>
+                <td class="subhead">Dislikes</td>
+                <td class="content"><ul>
                     {% for dislike in dislikes %}
-                    • <a href="{{ url_for('search', id=dislike.id)}}"><b class="white">{{dislike.name}}:</b></a> {{dislike.content}}
+                    <li><a href="{{ url_for('search', id=dislike.id)}}"><b class="white">{{dislike.name}}:</b></a> {{dislike.content}}</li>
                     {% endfor %}
-                </td>
+                </ul></td>
             </tr>
             <tr>
-                <td>Life Plans</td>
-                <td>
+                <td class="subhead">Life Plans</td>
+                <td class="content"><ul>
                     {% for plan in plans %}
-                    • <a href="{{ url_for('search', id=plan.id)}}"><b class="white">{{plan.name}}:</b></a> {{plan.content}}
+                    <li><a href="{{ url_for('search', id=plan.id)}}"><b class="white">{{plan.name}}:</b></a> {{plan.content}}</li>
                     {% endfor %}
-                </td>
+                </ul></td>
             </tr>
             <tr>
-                <td>Stories</td>
-                <td>
+                <td class="subhead">Stories</td>
+                <td class="content"><ul>
                     {% for story in stories %}
-                    • <a href="{{ url_for('search', id=story.id)}}"><b class="white">{{story.name}}:</b></a> {{story.content}}
+                    <li><a href="{{ url_for('search', id=story.id)}}"><b class="white">{{story.name}}:</b></a> {{story.content}}</li>
                     {% endfor %}
-                </td>
+                </ul></td>
             </tr>
             <tr>
-                <td>Potential To-Do's</td>
-                <td>
+                <td class="subhead">Potential To-Do's</td>
+                <td class="content"><ul>
                     {% for todo in todos %}
-                    • <a href="{{ url_for('search', id=todo.id)}}"><b class="white">{{todo.name}}:</b></a> {{todo.content}}
+                    <li><a href="{{ url_for('search', id=todo.id)}}"><b class="white">{{todo.name}}:</b></a> {{todo.content}}</li>
                     {% endfor %}
-                </td>
+                </ul></td>
             </tr>
             <tr>
-                <td>Inspiring Quotes</td>
-                <td>
+                <td class="subhead">Inspiring Quotes</td>
+                <td class="content"><ul>
                     {% for quote in quotes %}
-                    • <a href="{{ url_for('search', id=quote.id)}}"><b class="white">{{quote.name}}:</b></a> {{quote.content}}
+                    <li><a href="{{ url_for('search', id=quote.id)}}"><b class="white">{{quote.name}}:</b></a> {{quote.content}}</li>
                     {% endfor %}
-                </td>
+                </ul></td>
             </tr>
             <tr>
-                <td>Shared Events</td>
-                <td>
+                <td class="subhead">Shared Events</td>
+                <td class="content"><ul>
                     {% for event in events %}
-                    • <a href="{{ url_for('search', id=event.id)}}"><b class="white">{{event.name}}:</b></a> {{event.content}}
+                    <li><a href="{{ url_for('search', id=event.id)}}"><b class="white">{{event.name}}:</b></a> {{event.content}}</li>
                     {% endfor %}
-                </td>
+                </ul></td>
             </tr>
             <tr>
-                <td>Work / School</td>
-                <td>
+                <td class="subhead">Work / School</td>
+                <td class="content"><ul>
                     {% for w in work %}
-                    • <a href="{{ url_for('search', id=w.id)}}"><b class="white">{{w.name}}:</b></a> {{w.content}}
+                    <li><a href="{{ url_for('search', id=w.id)}}"><b class="white">{{w.name}}:</b></a> {{w.content}}</li>
                     {% endfor %}
-                </td>
+                </ul></td>
             </tr>
             <tr>
-                <td>General Notes</td>
-                <td>
+                <td class="subhead">General Notes</td>
+                <td class="content"><ul>
                     {% for note in general %}
-                    <div>• </b><a href="{{ url_for('search', id=note.id)}}"><b class="white">{{note.name}}:</b></a> {{note.content}}</div>
+                    <li></b><a href="{{ url_for('search', id=note.id)}}"><b class="white">{{note.name}}:</b></a> {{note.content}}</li>
                     {% endfor %}
-                </td>
+                </ul></td>
             </tr>
         </tbody>
     </table>

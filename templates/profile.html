@@ -57,12 +57,11 @@
 {% endblock %}
 
 {% block main %}
-    <div class="header">{{item}}</div><br>
-
     <!-- Display Friend Info -->
     <form action="{{ url_for('edit', id=id) }}" name="profile" method="post">
         <fieldset>
-            <table align="center">
+            <div class="header">{{item}}</div><br>
+            <table align="center" class="a">
                 <tr>
                     <td align="right">Interests</td>
                     <td align="left"><div class="form-group"><textarea class="form-control subhead completed" rows="3" name="interest" id="completed">{{interest}}</textarea></div></td>
