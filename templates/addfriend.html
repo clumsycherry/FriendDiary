@@ -48,6 +48,9 @@
 
 {% block main %}
     <div class="header">Add Friend...</div><br>
+    <div>Tip: Add the '#' symbol to create tags (e.g. Mark loves #dogs and #cars).<br>
+    You can easily track down any taggedd notes in the future by entering the tag into the search bar.<br>
+    You may also browse all existing hashtags by clicking into the 'Hashtags' tab at the top of the page. <br><br></div>
 
     <!-- Add Friend Info -->
     <form action="{{ url_for('addfriend') }}" name="addfriend" method="post">

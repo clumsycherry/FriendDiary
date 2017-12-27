@@ -154,11 +154,17 @@ def search():
     if request.method == "POST":
         item=request.form["item"]
         if not item:
-            return apology("Enter name into search bar and check spelling.")
+            return apology("Please enter a name or interest into the search bar above.")
         #Search by name(not case sensitive)
         friend = Friend.query.filter(Friend.name.contains(item), Friend.user_id == session["user_id"]).first()
         if not friend:
-            return apology("No results!")
+            #check if it's a hashtag
+            if item[0] != '#':
+                item = '#' + item
+            hashtag = Hashtag.query.filter(Hashtag.hashtag==item.lower()).first()
+            if not hashtag:
+                return apology("No results! Please check your spelling and entire only one item!")
+            return redirect(url_for('tag', h_id=hashtag.id))
         return displayFriend(friend)
 
 @app.route("/addfriend", methods=["GET", "POST"])
