@@ -58,9 +58,9 @@
 
 {% block main %}
     <!-- Display Friend Info -->
+    <div class="header">{{item}}</div><br>
     <form action="{{ url_for('edit', id=id) }}" name="profile" method="post">
         <fieldset>
-            <div class="header">{{item}}</div><br>
             <table align="center" class="a">
                 <tr>
                     <td align="right">Interests</td>
@@ -97,6 +97,10 @@
                 <tr>
                     <td align="right">General Notes</td>
                     <td align="left"><div class="form-group"><textarea class="form-control subhead completed" rows="3" name="note" id="completed">{{note}}</textarea></div></td>
+                </tr>
+                <tr>
+                    <td align="right">Change name:</td>
+                    <td align="left"><div class="form-group"><input class="form-control" id="box" name="name" placeholder="Enter modified name here..." type="text"/></div></td>
                 </tr>
                 <tr>
                     <td colspan="2"><div class="form-group gray">

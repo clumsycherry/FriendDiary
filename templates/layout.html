@@ -39,11 +39,12 @@
                                     <!-- Drop down search bar by https://codepen.io/MarkoD/pen/XJGVde -->
                                     <form class="navbar-form search" role="search" action="{{ url_for('search') }}" method="post" autocomplete="off">
                                         <input class="form-control" type="text submit" name="item" id="navBarSearchInput" placeholder="&#x1F50E Search Friend or Hashtag">
+                                        <!-- hide results for now
                                         <ul class="results">
                                 		    <li><a href="index.html">Search Result #1:<span> Description...</span></a></li>
                                 			<li><a href="index.html">Search Result #2:<span> Description...</span></a></li>
                                 	 		<li><a href="index.html">Search Result #3:<span> Description...</span></a></li>
-                                	    </ul>
+                                	    </ul> -->
                                     </form>
                                 </li>
                                 <li><a href="{{ url_for('addfriend') }}">Add Friend</a></li>

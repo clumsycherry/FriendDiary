@@ -266,6 +266,8 @@ def edit():
     friend.events = check(request.form["event"], "event")
     friend.work = check(request.form["work"], "work")
     friend.general = check(request.form["note"], "note")
+    if request.form["name"] != "":
+        friend.name = request.form["name"]
     db.session.commit()
     session.pop("friend_id", None)
 
