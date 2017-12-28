@@ -123,7 +123,28 @@ def register():
 @login_required
 def unregister():
     """Delete user account."""
-    User.query.filter(User.id == session["user_id"]).delete()
+    #Delete friends and associated bullets
+    friends = Friend.query.filter_by(user_id = session["user_id"]).all()
+    if friends != None:
+        for friend in friends:
+            #Delete bullets in friends
+            bullets = Bullet.query.filter_by(friend_id = friend.id).all()
+            if bullets != None:
+                for bullet in bullets:
+                    #Delete hashtag records of the bullet
+                    b_ids = Hashtag.query.get(bullet.hashtag_id).bullet_ids
+                    if bullet.id in b_ids:
+                        b_ids.remove(bullet.id)
+                        #Delete empty hashtags
+                        if b_ids == []:
+                            Hashtag.query.filter_by(id=bullet.hashtag_id).delete()
+                        else:
+                            Hashtag.query.get(bullet.hashtag_id).bullet_ids = b_ids
+                            db.session.commit()
+                    Bullet.query.filter_by(id=bullet.id).delete()
+                Friend.query.filter_by(id=friend.id).delete()
+    #delete user
+    User.query.filter_by(id=session["user_id"]).delete()
     db.session.commit()
     session.clear()
     return render_template("login.html", message="Account successfully deleted!")
