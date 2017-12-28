@@ -2,15 +2,10 @@
 
 {% block title %}
     Index
-    {% if get_flashed_messages() %}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        {{ get_flashed_messages() | join(" ") }}
-    {% endif %}
 {% endblock %}
 
 {% block main %}
     <p>Diary of <span class="purple"><b>{{name}}</b></span></p>
-    <br><br><br><span id="count">{{count}}</span>
-    <p>Total Entries</p>
+    <br><p><span class="white" id="count">{{count}}</span></br>Total Entries</p>
     <br><br><br><br><br><br><br><u><a href="{{ url_for('unregister') }}" class="white">Delete My Account</a></u>
 {% endblock %}

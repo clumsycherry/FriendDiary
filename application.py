@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, render_template, request, url_for, session
+from flask import Flask, flash, redirect, render_template, request, url_for, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from passlib.apps import custom_app_context as pwd_context
@@ -180,8 +180,17 @@ def addfriend():
         if name == "":
             return render_template("addfriend.html", message = "Must fill in a friend's name")
 
-        #create friend
-        friend = Friend(session["user_id"], name)
+        #create friend while checking for duplicates
+        temp_name = name
+        name_count = 1
+        while True:
+            if Friend.query.filter_by(name=temp_name, user_id=session["user_id"]).count() > 0:
+                name_count += 1
+                temp_name = name + " " +str(name_count)
+            else:
+                break
+
+        friend = Friend(session["user_id"], temp_name)
         db.session.add(friend)
 
         #grab current/most recent friend from db
@@ -202,11 +211,11 @@ def addfriend():
         session.pop("friend_id", None)
 
         #check for duplicate entries
-        if Friend.query.filter(Friend.name==friend.name).count() > 1:
-            message = "{} Added! Note: There are now more than 1 {}s on your friend list".format(name, name)
-            return displayFriend(friend, message)
+        message = "{} Added!".format(temp_name)
+        if name_count > 1:
+            message += "Note: There are " + str(name_count) + " {}s on your friend list".format(name)
 
-        return displayFriend(friend, "{} Added!".format(name))
+        return displayFriend(friend, message)
 
 @app.route("/friends", methods=["GET"])
 @login_required
@@ -292,3 +301,6 @@ def tag():
     general = categorize(bullets, 'note')
 
     return render_template("tag.html", bullets=bullets, interests=interests, dislikes=dislikes, quotes=quotes, todos=todos, plans=plans, stories=stories, events=events, work=work, general=general)
+
+if __name__ == '__main__':
+    app.run(debug=True)

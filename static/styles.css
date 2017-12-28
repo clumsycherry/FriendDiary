@@ -78,6 +78,7 @@ td ul{
 #hashtag tr .subhead{
     text-align: right;
     color: #f26a9c;
+    width: 200px;
 
 }
 #hashtag td .content{
@@ -131,9 +132,14 @@ td #box, td #completed{
     resize: none;
 }
 
+#count{
+    font-size:70pt;
+    font-family: "monotype corsiva";
+}
+
 /* * Copyright (c) 2012 Thibaut Courouble
  * Licensed under the MIT License
- * CSS for the search bar
+ * Search bar design
    ================================================== */
 .search input {
     border-width: 1px;
